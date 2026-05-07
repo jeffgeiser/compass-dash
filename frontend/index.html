@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>compass-dash</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <span class="brand">compass-dash</span>
+    <nav>
+      <a href="#" data-screen="review" class="active">Review</a>
+      <a href="#" data-screen="files">Files</a>
+      <a href="#" data-screen="activity">Activity</a>
+      <a href="#" data-screen="config">Config</a>
+    </nav>
+    <div class="header-actions">
+      <span id="compass-path-label" class="text-sm text-muted"></span>
+    </div>
+  </header>
+
+  <main>
+    <!-- ── Review screen ── -->
+    <div id="screen-review" class="screen active">
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-pending">–</div>
+          <div class="stat-label">Pending refinements</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-oldest">–</div>
+          <div class="stat-label">Oldest pending (days)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-accepted">–</div>
+          <div class="stat-label">Accepted this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-rejected">–</div>
+          <div class="stat-label">Rejected this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-last-review">–</div>
+          <div class="stat-label">Last review</div>
+        </div>
+      </div>
+
+      <div id="review-list-pane">
+        <p class="section-title">Pending refinements</p>
+        <div id="refinement-list"></div>
+      </div>
+
+      <!-- Detail pane (hidden until a refinement is selected) -->
+      <div id="review-detail-pane" class="hidden">
+        <div class="detail-header">
+          <button id="back-to-list" class="btn btn-sm">← Back</button>
+          <div class="btn-group" style="margin-left:auto">
+            <button id="btn-accept" class="btn btn-primary">Accept</button>
+            <button id="btn-edit-accept" class="btn">Edit &amp; Accept</button>
+            <button id="btn-reject" class="btn btn-danger">Reject</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="refinement-title" id="detail-title"></h2>
+          </div>
+          <div class="card-meta" id="detail-meta"></div>
+          <p class="refinement-target" id="detail-target"></p>
+        </div>
+
+        <div id="detail-sections"></div>
+
+        <!-- Preview panel -->
+        <div id="preview-panel" class="hidden">
+          <p class="section-title mt-16">Preview — what the file will look like after applying</p>
+          <div class="diff-preview" id="preview-content"></div>
+          <div id="preview-error" class="notice error hidden"></div>
+        </div>
+
+        <!-- Edit & Accept panel -->
+        <div id="edit-panel" class="hidden">
+          <p class="section-title mt-16">Edit target file — then accept</p>
+          <textarea class="edit-area" id="edit-textarea"></textarea>
+          <div class="btn-group mt-8">
+            <button id="btn-accept-edited" class="btn btn-primary">Accept with edits</button>
+            <button id="btn-cancel-edit" class="btn">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reject modal -->
+      <div class="modal-backdrop" id="reject-modal">
+        <div class="modal">
+          <h2>Reject refinement</h2>
+          <p class="text-sm text-muted">Briefly explain why — this is appended to the refinement file before archiving.</p>
+          <textarea class="edit-area" id="reject-reason" style="min-height:80px" placeholder="e.g. 'Agent misread context — this pattern isn't real'"></textarea>
+          <div class="modal-footer">
+            <button id="btn-reject-cancel" class="btn">Cancel</button>
+            <button id="btn-reject-confirm" class="btn btn-danger">Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Files screen ── -->
+    <div id="screen-files" class="screen">
+      <h2 class="page-title">Compass files</h2>
+      <div id="file-browser">
+        <div class="empty-state"><div class="spinner"></div></div>
+      </div>
+
+      <!-- File viewer -->
+      <div id="file-viewer" class="hidden">
+        <div class="detail-header">
+          <button id="back-to-files" class="btn btn-sm">← Files</button>
+          <span id="file-viewer-path" class="text-sm text-muted" style="font-family:var(--mono)"></span>
+        </div>
+        <div class="card">
+          <div id="file-viewer-content" class="detail-section content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Activity screen ── -->
+    <div id="screen-activity" class="screen">
+      <h2 class="page-title">Activity log</h2>
+      <div id="activity-log">
+        <div class="empty-state"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- ── Config screen ── -->
+    <div id="screen-config" class="screen">
+      <h2 class="page-title">Settings</h2>
+      <div class="card">
+        <form class="config-form" id="config-form">
+          <label for="cfg-compass-path">Compass path</label>
+          <input type="text" id="cfg-compass-path" placeholder="/path/to/your/compass">
+          <p class="config-hint">Absolute path to your compass folder (contains COMPASS.md).</p>
+
+          <button type="submit" class="btn btn-primary">Save settings</button>
+        </form>
+        <div id="config-notice" class="notice hidden mt-16"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/static/markdown.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
