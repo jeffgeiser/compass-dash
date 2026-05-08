@@ -73,6 +73,10 @@ async function loadStats() {
     pendingEl.textContent = pd;
     pendingEl.className = 'stat-value' + (pd > 5 ? ' warn' : pd === 0 ? ' ok' : '');
 
+    const badge = document.getElementById('nav-pending-badge');
+    if (pd > 0) { badge.textContent = pd; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+
     const oldest = stats.oldest_pending_age_days;
     oldestEl.textContent = oldest > 0 ? Math.round(oldest) : '–';
     oldestEl.className = 'stat-value' + (oldest > 14 ? ' warn' : '');

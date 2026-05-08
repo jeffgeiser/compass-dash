@@ -9,16 +9,16 @@
 <body>
 <div id="app">
   <header>
-    <span class="brand">compass-dash</span>
+    <a class="brand" href="#">
+      <span class="brand-name">compass</span><span class="brand-suffix">dash</span>
+    </a>
     <nav>
-      <a href="#" data-screen="review" class="active">Review</a>
+      <a href="#" data-screen="review" class="active">Review <span id="nav-pending-badge" class="nav-badge hidden"></span></a>
       <a href="#" data-screen="files">Files</a>
       <a href="#" data-screen="activity">Activity</a>
-      <a href="#" data-screen="config">Config</a>
+      <a href="#" data-screen="config">Settings</a>
     </nav>
-    <div class="header-actions">
-      <span id="compass-path-label" class="text-sm text-muted"></span>
-    </div>
+    <span id="compass-path-label" class="header-path"></span>
   </header>
 
   <main>
