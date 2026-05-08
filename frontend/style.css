@@ -222,7 +222,21 @@ h2.page-title {
   transition: box-shadow .15s, border-color .15s;
 }
 
-.card:hover { border-color: #d5d5d5; box-shadow: var(--shadow-md); }
+.card:hover { border-color: rgba(0,112,243,.25); box-shadow: var(--shadow-md); }
+
+/* ── Refinement grid ── */
+
+.refinement-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .refinement-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.refinement-grid .card { margin-bottom: 0; }
 
 .card-header {
   display: flex;
@@ -312,6 +326,8 @@ button:hover, .btn:hover {
 
 .btn-sm { padding: 4px 10px; font-size: 12px; }
 
+button svg, .btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
 .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
 
 /* ── Refinement list ── */
@@ -337,6 +353,10 @@ button:hover, .btn:hover {
   color: var(--text-muted);
   margin: 8px 0 0;
   line-height: 1.55;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 /* ── Detail view ── */
@@ -513,6 +533,24 @@ textarea.edit-area:focus {
 }
 
 .empty-state p { font-size: 13px; margin: 0; color: var(--text-muted); }
+
+.empty-state.all-caught-up {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 64px 24px;
+}
+
+.empty-icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--success-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: var(--success);
+}
 
 /* ── Modal ── */
 

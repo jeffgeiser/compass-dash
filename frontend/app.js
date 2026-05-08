@@ -112,28 +112,31 @@ async function loadRefinements() {
 function renderRefinementList() {
   const listEl = document.getElementById('refinement-list');
   if (!pendingRefinements.length) {
-    listEl.innerHTML = `<div class="empty-state">
-      <h3>No pending refinements</h3>
-      <p>When your AI tools propose Compass updates, they'll appear here.</p>
+    listEl.innerHTML = `<div class="empty-state all-caught-up">
+      <div class="empty-icon-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h3>All caught up!</h3>
+      <p>No pending refinements to review.</p>
     </div>`;
     return;
   }
 
-  listEl.innerHTML = pendingRefinements.map(r => `
+  listEl.innerHTML = `<div class="refinement-grid">${pendingRefinements.map(r => `
     <div class="card" style="cursor:pointer" data-id="${escAttr(r.id)}">
       <div class="card-header">
         <h3 class="refinement-title">${escHTML(r.id)}</h3>
       </div>
       <div class="card-meta">
-        ${r.change_type ? `<span class="tag ${escAttr(r.change_type)}">${escHTML(r.change_type)}</span>` : ''}
-        ${r.confidence ? `<span class="tag ${escAttr(r.confidence)}">${escHTML(r.confidence)} confidence</span>` : ''}
+        ${r.change_type ? `<span class="tag ${escAttr(r.change_type.toLowerCase())}">${escHTML(r.change_type)}</span>` : ''}
+        ${r.confidence ? `<span class="tag ${escAttr(r.confidence.toLowerCase())}">${escHTML(r.confidence)} confidence</span>` : ''}
         ${r.proposed_by ? `<span class="tag">${escHTML(r.proposed_by)}</span>` : ''}
         ${r.proposed_at ? `<span class="text-sm text-muted">${formatRelativeDate(r.proposed_at)}</span>` : ''}
       </div>
       <p class="refinement-target">${escHTML(r.target_file || '')}${r.target_section ? ' › ' + escHTML(r.target_section) : ''}</p>
       ${r.observation_preview ? `<p class="refinement-observation">${escHTML(r.observation_preview)}</p>` : ''}
     </div>
-  `).join('');
+  `).join('')}</div>`;
 
   listEl.querySelectorAll('.card[data-id]').forEach(el => {
     el.addEventListener('click', () => {
@@ -153,8 +156,8 @@ function openRefinementDetail(r) {
 
   const meta = document.getElementById('detail-meta');
   meta.innerHTML = [
-    r.change_type && `<span class="tag ${escAttr(r.change_type)}">${escHTML(r.change_type)}</span>`,
-    r.confidence && `<span class="tag ${escAttr(r.confidence)}">${escHTML(r.confidence)} confidence</span>`,
+    r.change_type && `<span class="tag ${escAttr(r.change_type.toLowerCase())}">${escHTML(r.change_type)}</span>`,
+    r.confidence && `<span class="tag ${escAttr(r.confidence.toLowerCase())}">${escHTML(r.confidence)} confidence</span>`,
     r.proposed_by && `<span class="tag">${escHTML(r.proposed_by)}</span>`,
     r.proposed_at && `<span class="text-sm text-muted">${formatRelativeDate(r.proposed_at)}</span>`,
   ].filter(Boolean).join('');
