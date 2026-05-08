@@ -26,20 +26,22 @@ When AI tools propose refinements to your Compass, they land in `refinements/pen
 
 ```sh
 # macOS Apple Silicon
-curl -L https://github.com/jeffgeiser/compass-dash/releases/latest/download/compass-dash-darwin-arm64 -o compass-dash
-chmod +x compass-dash
-./compass-dash --compass-path ~/compass
+curl -L https://github.com/jeffgeiser/compass-dash/releases/latest/download/compass-dash-darwin-arm64 -o /usr/local/bin/compass-dash
+chmod +x /usr/local/bin/compass-dash
+compass-dash --compass-path ~/compass
 
 # macOS Intel
-curl -L https://github.com/jeffgeiser/compass-dash/releases/latest/download/compass-dash-darwin-amd64 -o compass-dash
-chmod +x compass-dash
-./compass-dash --compass-path ~/compass
+curl -L https://github.com/jeffgeiser/compass-dash/releases/latest/download/compass-dash-darwin-amd64 -o /usr/local/bin/compass-dash
+chmod +x /usr/local/bin/compass-dash
+compass-dash --compass-path ~/compass
 
 # Linux
-curl -L https://github.com/jeffgeiser/compass-dash/releases/latest/download/compass-dash-linux-amd64 -o compass-dash
-chmod +x compass-dash
-./compass-dash --compass-path ~/compass
+curl -L https://github.com/jeffgeiser/compass-dash/releases/latest/download/compass-dash-linux-amd64 -o /usr/local/bin/compass-dash
+chmod +x /usr/local/bin/compass-dash
+compass-dash --compass-path ~/compass
 ```
+
+> If `/usr/local/bin` requires sudo, either prefix the `curl` and `chmod` commands with `sudo`, or replace `/usr/local/bin/compass-dash` with `~/compass-dash` to install in your home directory instead.
 
 **From source** (requires [Go 1.21+](https://go.dev/dl/)):
 
