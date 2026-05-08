@@ -22,21 +22,31 @@ When AI tools propose refinements to your Compass, they land in `refinements/pen
 
 ## Install
 
-**From source:**
-
-```sh
-git clone https://github.com/jeffgeiser/compass-dash
-cd compass-dash
-make build
-./compass-dash --compass-path /path/to/your/compass
-```
-
-**Pre-built binaries** (after a release):
+**Pre-built binaries (no Go required):**
 
 ```sh
 # macOS Apple Silicon
 curl -L https://github.com/jeffgeiser/compass-dash/releases/latest/download/compass-dash-darwin-arm64 -o compass-dash
 chmod +x compass-dash
+./compass-dash --compass-path ~/compass
+
+# macOS Intel
+curl -L https://github.com/jeffgeiser/compass-dash/releases/latest/download/compass-dash-darwin-amd64 -o compass-dash
+chmod +x compass-dash
+./compass-dash --compass-path ~/compass
+
+# Linux
+curl -L https://github.com/jeffgeiser/compass-dash/releases/latest/download/compass-dash-linux-amd64 -o compass-dash
+chmod +x compass-dash
+./compass-dash --compass-path ~/compass
+```
+
+**From source** (requires [Go 1.21+](https://go.dev/dl/)):
+
+```sh
+git clone https://github.com/jeffgeiser/compass-dash
+cd compass-dash
+make build
 ./compass-dash --compass-path ~/compass
 ```
 
