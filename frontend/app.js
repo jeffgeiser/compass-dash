@@ -125,7 +125,7 @@ function renderRefinementList() {
   listEl.innerHTML = `<div class="refinement-grid">${pendingRefinements.map(r => `
     <div class="card" style="cursor:pointer" data-id="${escAttr(r.id)}">
       <div class="card-header">
-        <h3 class="refinement-title">${escHTML(r.id)}</h3>
+        <h3 class="refinement-title">${escHTML((r.frontmatter && r.frontmatter.title) || r.id)}</h3>
       </div>
       <div class="card-meta">
         ${r.change_type ? `<span class="tag ${escAttr(r.change_type.toLowerCase())}">${escHTML(r.change_type)}</span>` : ''}
@@ -150,7 +150,7 @@ function openRefinementDetail(r) {
   selectedRefinement = r;
   currentFileContent = null;
 
-  document.getElementById('detail-title').textContent = r.id;
+  document.getElementById('detail-title').textContent = (r.frontmatter && r.frontmatter.title) || r.id;
   document.getElementById('detail-target').textContent =
     (r.target_file || '') + (r.target_section ? ' › ' + r.target_section : '');
 
@@ -320,40 +320,84 @@ function hideEditPanel() {
 
 // ── Files screen ──────────────────────────────────────────────────────────────
 
+const FILE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+const FOLDER_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`;
+
 async function loadFilesScreen() {
-  document.getElementById('file-browser').classList.remove('hidden');
+  const treeEl = document.getElementById('file-tree');
+  treeEl.innerHTML = '<div class="empty-state"><div class="spinner"></div></div>';
+  document.getElementById('file-viewer-placeholder').classList.remove('hidden');
   document.getElementById('file-viewer').classList.add('hidden');
 
-  const browserEl = document.getElementById('file-browser');
-  browserEl.innerHTML = '<div class="empty-state"><div class="spinner"></div></div>';
   try {
     const files = await apiFetch('/files');
-    renderFileList(files);
+    renderFileTree(files);
   } catch (err) {
-    browserEl.innerHTML = `<div class="notice error">${escHTML(err.message)}</div>`;
+    treeEl.innerHTML = `<div class="notice error">${escHTML(err.message)}</div>`;
   }
 }
 
-function renderFileList(files) {
-  const browserEl = document.getElementById('file-browser');
+function renderFileTree(files) {
+  const treeEl = document.getElementById('file-tree');
   if (!files || !files.length) {
-    browserEl.innerHTML = '<div class="empty-state"><h3>No files found</h3><p>Check that your Compass path is set correctly in Config.</p></div>';
+    treeEl.innerHTML = '<p class="text-sm text-muted">No files found.</p>';
     return;
   }
 
-  browserEl.innerHTML = `<ul class="file-list">${files.map(f => `
-    <li class="file-item" data-path="${escAttr(f.path)}">
-      <span class="file-icon">📄</span>
-      <span>${escHTML(f.path)}</span>
-    </li>`).join('')}</ul>`;
+  // Group by directory using the `dir` field from the API
+  const byDir = {};
+  const rootFiles = [];
+  files.forEach(f => {
+    if (!f.dir || f.dir === '.') {
+      rootFiles.push(f);
+    } else {
+      if (!byDir[f.dir]) byDir[f.dir] = [];
+      byDir[f.dir].push(f);
+    }
+  });
 
-  browserEl.querySelectorAll('.file-item[data-path]').forEach(el => {
-    el.addEventListener('click', () => openFile(el.dataset.path));
+  let html = '';
+
+  rootFiles.forEach(f => {
+    html += `<div class="tree-root-file" data-path="${escAttr(f.path)}">${FILE_ICON}<span>${escHTML(f.filename)}</span></div>`;
+  });
+
+  Object.keys(byDir).sort().forEach(dir => {
+    html += `<div class="tree-folder" data-dir="${escAttr(dir)}">
+      <div class="tree-folder-header">
+        <span class="tree-chevron">▾</span>
+        ${FOLDER_ICON}
+        <span>${escHTML(dir)}</span>
+      </div>
+      <div class="tree-folder-files">
+        ${byDir[dir].map(f => `<div class="tree-file" data-path="${escAttr(f.path)}">${FILE_ICON}<span>${escHTML(f.filename)}</span></div>`).join('')}
+      </div>
+    </div>`;
+  });
+
+  treeEl.innerHTML = html || '<p class="text-sm text-muted">No files found.</p>';
+
+  // Folder toggle
+  treeEl.querySelectorAll('.tree-folder-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.closest('.tree-folder').classList.toggle('collapsed');
+    });
+  });
+
+  // File click
+  treeEl.querySelectorAll('[data-path]').forEach(el => {
+    el.addEventListener('click', () => openFile(el.dataset.path, el));
   });
 }
 
-async function openFile(path) {
-  document.getElementById('file-browser').classList.add('hidden');
+let activeFileEl = null;
+
+async function openFile(path, triggerEl) {
+  if (activeFileEl) activeFileEl.classList.remove('active');
+  activeFileEl = triggerEl || null;
+  if (activeFileEl) activeFileEl.classList.add('active');
+
+  document.getElementById('file-viewer-placeholder').classList.add('hidden');
   const viewerEl = document.getElementById('file-viewer');
   viewerEl.classList.remove('hidden');
   document.getElementById('file-viewer-path').textContent = path;
@@ -366,11 +410,6 @@ async function openFile(path) {
     contentEl.innerHTML = `<div class="notice error">${escHTML(err.message)}</div>`;
   }
 }
-
-document.getElementById('back-to-files').addEventListener('click', () => {
-  document.getElementById('file-browser').classList.remove('hidden');
-  document.getElementById('file-viewer').classList.add('hidden');
-});
 
 // ── Activity screen ───────────────────────────────────────────────────────────
 
@@ -391,12 +430,16 @@ function renderActivityLog(entries) {
     logEl.innerHTML = '<div class="empty-state"><h3>No activity yet</h3><p>Actions you take in compass-dash are recorded here.</p></div>';
     return;
   }
-  logEl.innerHTML = `<div class="card"><div>${entries.map(e => `
-    <div class="log-entry">
+  const badgeClass = { proposed: 'proposed', accepted: 'accepted', rejected: 'rejected' };
+  logEl.innerHTML = `<div class="card"><div>${entries.map(e => {
+    const type = (e.event_type || '').toLowerCase();
+    const cls = badgeClass[type] || '';
+    return `<div class="log-entry">
       <span class="log-time">${escHTML(formatLogDate(e.timestamp))}</span>
-      <span class="log-type">${escHTML(e.event_type || '')}</span>
+      <span class="log-badge ${cls}">${escHTML(e.event_type || '')}</span>
       <span class="log-desc">${escHTML(e.description || '')}</span>
-    </div>`).join('')}</div></div>`;
+    </div>`;
+  }).join('')}</div></div>`;
 }
 
 // ── Config screen ─────────────────────────────────────────────────────────────

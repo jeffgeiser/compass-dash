@@ -26,24 +26,24 @@
     <div id="screen-review" class="screen active">
       <div class="stats-row" id="stats-row">
         <div class="stat-card">
-          <div class="stat-value" id="stat-pending">–</div>
           <div class="stat-label">Pending refinements</div>
+          <div class="stat-value" id="stat-pending">–</div>
         </div>
         <div class="stat-card">
+          <div class="stat-label">Oldest pending</div>
           <div class="stat-value" id="stat-oldest">–</div>
-          <div class="stat-label">Oldest pending (days)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="stat-accepted">–</div>
           <div class="stat-label">Accepted this month</div>
+          <div class="stat-value" id="stat-accepted">–</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" id="stat-rejected">–</div>
           <div class="stat-label">Rejected this month</div>
+          <div class="stat-value" id="stat-rejected">–</div>
         </div>
         <div class="stat-card">
+          <div class="stat-label">Last review date</div>
           <div class="stat-value" id="stat-last-review">–</div>
-          <div class="stat-label">Last review</div>
         </div>
       </div>
 
@@ -107,19 +107,22 @@
 
     <!-- ── Files screen ── -->
     <div id="screen-files" class="screen">
-      <h2 class="page-title">Compass files</h2>
-      <div id="file-browser">
-        <div class="empty-state"><div class="spinner"></div></div>
-      </div>
-
-      <!-- File viewer -->
-      <div id="file-viewer" class="hidden">
-        <div class="detail-header">
-          <button id="back-to-files" class="btn btn-sm">← Files</button>
-          <span id="file-viewer-path" class="text-sm text-muted" style="font-family:var(--mono)"></span>
+      <div class="files-layout">
+        <div class="files-sidebar">
+          <p class="section-title">Compass files</p>
+          <div id="file-tree"><div class="empty-state"><div class="spinner"></div></div></div>
         </div>
-        <div class="card">
-          <div id="file-viewer-content" class="detail-section content"></div>
+        <div class="files-viewer">
+          <div id="file-viewer-placeholder" class="files-viewer-empty">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <p>Select a file to view its contents</p>
+          </div>
+          <div id="file-viewer" class="hidden">
+            <div class="files-viewer-header">
+              <span id="file-viewer-path" class="text-sm text-muted" style="font-family:var(--mono)"></span>
+            </div>
+            <div id="file-viewer-content" class="files-viewer-body detail-section content"></div>
+          </div>
         </div>
       </div>
     </div>
