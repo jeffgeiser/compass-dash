@@ -56,13 +56,44 @@ make build
 
 ## Usage
 
-```
-compass-dash --compass-path /path/to/your/compass
+```sh
+compass-dash --compass-path ~/compass
 ```
 
 Opens `http://127.0.0.1:7174` in your browser (or visit it manually).
 
-The `--compass-path` flag sets the path and saves it to `~/.compass-dash/config.json` for future runs. After the first run you can launch without the flag.
+The `--compass-path` flag saves the path to `~/.compass-dash/config.json`, so subsequent runs don't need the flag.
+
+---
+
+## Run as a background service (macOS)
+
+Install compass-dash as a launchd service so it starts automatically at login and runs in the background — no terminal required.
+
+```sh
+# Download the install script
+curl -L https://github.com/jeffgeiser/compass-dash/releases/latest/download/install-service.sh -o install-service.sh
+chmod +x install-service.sh
+
+# Install (uses ~/compass by default)
+./install-service.sh
+
+# Or with a custom compass path
+./install-service.sh /path/to/your/compass
+```
+
+Once installed, compass-dash runs at `http://127.0.0.1:7174` and restarts automatically if it exits.
+
+```sh
+# Stop the service
+launchctl unload ~/Library/LaunchAgents/io.hiipo.compass-dash.plist
+
+# Remove the service entirely
+./uninstall-service.sh
+
+# View logs
+tail -f /tmp/compass-dash.log
+```
 
 ---
 
