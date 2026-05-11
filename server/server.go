@@ -16,14 +16,15 @@ import (
 
 // Server holds the HTTP server and shared state.
 type Server struct {
-	mu  sync.RWMutex
-	cfg config.Config
-	srv *http.Server
+	mu      sync.RWMutex
+	cfg     config.Config
+	srv     *http.Server
+	version string
 }
 
 // New constructs a Server with the given config and embedded frontend FS.
-func New(cfg config.Config, frontendFS fs.FS) *Server {
-	s := &Server{cfg: cfg}
+func New(cfg config.Config, frontendFS fs.FS, version string) *Server {
+	s := &Server{cfg: cfg, version: version}
 
 	mux := http.NewServeMux()
 
@@ -45,6 +46,7 @@ func New(cfg config.Config, frontendFS fs.FS) *Server {
 
 	// API routes — dispatch by prefix and method
 	mux.HandleFunc("/api/health", s.handleHealth)
+	mux.HandleFunc("/api/version", s.handleVersion)
 	mux.HandleFunc("/api/config", s.routeConfig)
 	mux.HandleFunc("/api/stats", s.handleStats)
 	mux.HandleFunc("/api/refinements", s.routeRefinements)

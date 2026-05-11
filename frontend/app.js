@@ -451,8 +451,38 @@ async function loadConfigScreen() {
     document.getElementById('compass-path-label').textContent = cfg.compass_path
       ? shortPath(cfg.compass_path) : 'No compass path set';
     renderConnectPrompt(cfg.compass_path || '~/compass');
+    checkForUpdates();
   } catch (err) {
     showConfigNotice('error', 'Could not load config: ' + err.message);
+  }
+}
+
+async function checkForUpdates() {
+  const row = document.getElementById('version-row');
+  try {
+    const { version: current } = await apiFetch('/version');
+    row.innerHTML = `<span class="text-sm text-muted">Current version</span><span class="version-badge">${escHTML(current)}</span><span id="update-check-status" class="text-sm text-muted">checking…</span>`;
+
+    const res = await fetch('https://api.github.com/repos/jeffgeiser/compass-dash/releases/latest');
+    if (!res.ok) throw new Error('GitHub API error');
+    const data = await res.json();
+    const latest = data.tag_name;
+    const statusEl = document.getElementById('update-check-status');
+
+    if (latest && latest !== current) {
+      statusEl.remove();
+      const arch = /arm|aarch/i.test(navigator.platform || '') ? 'arm64' : 'amd64';
+      const cmd = `sudo curl -fsSL https://github.com/jeffgeiser/compass-dash/releases/download/${latest}/compass-dash-darwin-${arch} -o /usr/local/bin/compass-dash && sudo chmod +x /usr/local/bin/compass-dash`;
+      row.insertAdjacentHTML('afterend', `
+        <div class="update-notice">
+          <strong>${escHTML(latest)} available</strong> — run in Terminal to update &amp; restart:
+          <code>${escHTML(cmd)}</code>
+        </div>`);
+    } else {
+      statusEl.textContent = '✓ up to date';
+    }
+  } catch (err) {
+    if (row) row.innerHTML = '<span class="text-sm text-muted">Could not check for updates.</span>';
   }
 }
 

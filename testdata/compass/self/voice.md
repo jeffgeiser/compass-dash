@@ -11,6 +11,9 @@ I adjust formality by context — internal notes are casual, external communicat
 
 **I avoid:** "it's worth noting", "perhaps", "synergy", "reach out"
 
+Add to the "I avoid" list:
+- "leverage" (as a verb) — use "use" instead
+
 ## Sentence and paragraph structure
 
 Short paragraphs. One idea per paragraph. Lists when items are parallel.

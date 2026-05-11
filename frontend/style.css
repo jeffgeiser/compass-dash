@@ -617,6 +617,49 @@ textarea.edit-area:focus {
   margin-bottom: 16px;
 }
 
+/* ── Version / update row ── */
+
+.version-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.version-badge {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  color: var(--text-muted);
+}
+
+.update-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--accent-light);
+  border: 1px solid rgba(0,112,243,.15);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--accent);
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.update-notice code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: rgba(0,112,243,.08);
+  padding: 2px 6px;
+  border-radius: 3px;
+  user-select: all;
+}
+
 /* ── Connect prompt ── */
 
 .prompt-block {

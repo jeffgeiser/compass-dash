@@ -62,6 +62,10 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 }
 
+func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]string{"version": s.version})
+}
+
 // ── /api/config ───────────────────────────────────────────────────────────────
 
 func (s *Server) handleGetConfig(w http.ResponseWriter, r *http.Request) {

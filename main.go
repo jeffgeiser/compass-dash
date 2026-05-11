@@ -18,6 +18,7 @@ import (
 
 //go:embed all:frontend
 var frontendEmbed embed.FS
+var version = "dev"
 
 func main() {
 	var compassPath string
@@ -42,7 +43,7 @@ func main() {
 		log.Fatalf("could not prepare frontend FS: %v", err)
 	}
 
-	srv := server.New(cfg, frontendFS)
+	srv := server.New(cfg, frontendFS, version)
 
 	addr := srv.Addr()
 	fmt.Printf("compass-dash listening on http://%s\n", addr)

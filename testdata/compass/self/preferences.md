@@ -3,7 +3,7 @@
 ## Things I always want
 
 - Lead with the bad news, not the good news
-- Give me options (2-3) before recommending one
+- Give me exactly 3 options before recommending one, unless the problem genuinely has fewer
 - Push back if I'm wrong; don't just agree
 - Use plain English, not jargon
 
