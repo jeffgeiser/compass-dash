@@ -450,10 +450,44 @@ async function loadConfigScreen() {
     document.getElementById('cfg-compass-path').value = cfg.compass_path || '';
     document.getElementById('compass-path-label').textContent = cfg.compass_path
       ? shortPath(cfg.compass_path) : 'No compass path set';
+    renderConnectPrompt(cfg.compass_path || '~/compass');
   } catch (err) {
     showConfigNotice('error', 'Could not load config: ' + err.message);
   }
 }
+
+function renderConnectPrompt(compassPath) {
+  const prompt = `I have a personal context folder called a compass-md at ${compassPath}/.
+
+Before we start, please read:
+- ${compassPath}/CLAUDE.md — full instructions for working with this Compass
+- ${compassPath}/self/voice.md — my communication style and tone
+- ${compassPath}/self/preferences.md — my preferences
+- ${compassPath}/self/facts.md — facts about me
+- ${compassPath}/self/decisions.md — past decisions
+
+Follow the instructions in CLAUDE.md. In particular:
+- Let the Compass files inform how you write, recommend, and respond
+- If you observe something worth capturing (a corrected preference, a new pattern, a stated perspective), propose a refinement to ${compassPath}/refinements/pending/ using the format in CLAUDE.md
+- Do not edit Compass files directly — always use the pending queue
+- Maximum 3 refinements per session`;
+
+  document.getElementById('connect-prompt').textContent = prompt;
+}
+
+document.getElementById('btn-copy-prompt').addEventListener('click', async () => {
+  const text = document.getElementById('connect-prompt').textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    const btn = document.getElementById('btn-copy-prompt');
+    btn.textContent = 'Copied!';
+    setTimeout(() => {
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`;
+    }, 2000);
+  } catch (_) {
+    alert('Copy failed — select the text manually.');
+  }
+});
 
 document.getElementById('config-form').addEventListener('submit', async e => {
   e.preventDefault();
