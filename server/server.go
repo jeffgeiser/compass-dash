@@ -60,6 +60,13 @@ func New(cfg config.Config, frontendFS fs.FS, version string) *Server {
 	s.srv = &http.Server{
 		Handler: handler,
 	}
+
+	startAutoSync(func() string {
+		s.mu.RLock()
+		defer s.mu.RUnlock()
+		return s.cfg.CompassPath
+	})
+
 	return s
 }
 
