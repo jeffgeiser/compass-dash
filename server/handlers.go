@@ -232,6 +232,7 @@ func (s *Server) handleRefinementAccept(w http.ResponseWriter, r *http.Request) 
 
 	desc := fmt.Sprintf("%s — %s", id, ref.TargetFile)
 	_ = compass.AppendLogEntry(c.Path, "refinement-accepted", desc)
+	gitSync(c.Path, "accepted: "+id)
 
 	writeJSON(w, http.StatusOK, map[string]string{"status": "accepted", "message": result.Message})
 }
@@ -281,6 +282,7 @@ func (s *Server) handleRefinementAcceptEdited(w http.ResponseWriter, r *http.Req
 
 	desc := fmt.Sprintf("%s — %s (manually edited)", id, ref.TargetFile)
 	_ = compass.AppendLogEntry(c.Path, "refinement-accepted", desc)
+	gitSync(c.Path, "accepted: "+id)
 
 	writeJSON(w, http.StatusOK, map[string]string{"status": "accepted"})
 }
@@ -334,6 +336,7 @@ func (s *Server) handleRefinementReject(w http.ResponseWriter, r *http.Request) 
 		desc += " | " + body.Reason
 	}
 	_ = compass.AppendLogEntry(c.Path, "refinement-rejected", desc)
+	gitSync(c.Path, "rejected: "+id)
 
 	writeJSON(w, http.StatusOK, map[string]string{"status": "rejected"})
 }
