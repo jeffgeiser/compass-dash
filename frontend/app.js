@@ -487,20 +487,33 @@ async function checkForUpdates() {
 }
 
 function renderConnectPrompt(compassPath) {
-  const prompt = `I have a personal context folder called a compass-md at ${compassPath}/.
+  const prompt = `I use a compass-md personal context system. My compass lives at ${compassPath}/.
 
-Before we start, please read:
-- ${compassPath}/CLAUDE.md — full instructions for working with this Compass
-- ${compassPath}/self/voice.md — my communication style and tone
-- ${compassPath}/self/preferences.md — my preferences
-- ${compassPath}/self/facts.md — facts about me
-- ${compassPath}/self/decisions.md — past decisions
+## Step 1: Wire yourself up in this project (do this now, once)
 
-Follow the instructions in CLAUDE.md. In particular:
-- Let the Compass files inform how you write, recommend, and respond
-- If you observe something worth capturing (a corrected preference, a new pattern, a stated perspective), propose a refinement to ${compassPath}/refinements/pending/ using the format in CLAUDE.md
-- Do not edit Compass files directly — always use the pending queue
-- Maximum 3 refinements per session`;
+Check what agent config file this tool uses — CLAUDE.md (Claude Code), .cursorrules (Cursor),
+AGENTS.md, .github/copilot-instructions.md, or equivalent. Look for an existing one first.
+
+Add this block to that file (create it if it doesn't exist, skip if a compass block is already there):
+
+---
+## Personal Compass
+My compass-md is at ${compassPath}/. When generating commit messages, PR descriptions,
+documentation, emails, or any written output on my behalf, first read the relevant files:
+- Voice and tone  → ${compassPath}/self/voice.md
+- Preferences     → ${compassPath}/self/preferences.md
+- Context/facts   → ${compassPath}/self/facts.md
+- Past decisions  → ${compassPath}/self/decisions.md
+
+When you observe something worth capturing (a stated preference, a corrected pattern, a new
+perspective), write a refinement file to ${compassPath}/refinements/pending/ following the
+format in ${compassPath}/CLAUDE.md. Max 3 per session. Never edit compass files directly.
+---
+
+## Step 2: Use it now
+
+Read the compass files relevant to our current work, then confirm which files you read and
+proceed with our task.`;
 
   document.getElementById('connect-prompt').textContent = prompt;
 }
